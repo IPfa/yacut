@@ -1,5 +1,6 @@
 import random
 import string
+from http import HTTPStatus
 
 from flask import jsonify, request
 
@@ -20,8 +21,8 @@ def get_unique_short_id():
 def get_oroginal_id(short_id):
     url_map = URL_map.query.filter_by(short=short_id).first()
     if url_map is None:
-        raise InvalidAPIUsage('Указанный id не найден', 404)
-    return jsonify({'url': url_map.original}), 200
+        raise InvalidAPIUsage('Указанный id не найден', HTTPStatus.NOT_FOUND)
+    return jsonify({'url': url_map.original}), HTTPStatus.OK
 
 
 @app.route('/api/id/', methods=['POST'])
@@ -49,4 +50,4 @@ def create_short_url():
     return jsonify({
         'url': url_map.original,
         'short_link': BASE_URL + url_map.short
-    }), 201
+    }), HTTPStatus.CREATED
